@@ -1,0 +1,70 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #d9e4f5, #f5f7fa);
+  padding: 40px;
+}
+#app {
+  max-width: 400px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+h2, h3 {
+  text-align: center;
+  color: #333;
+}
+input, button {
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:hover {
+  background-color: #45a049;
+}
+button.red {
+  background-color: #e74c3c;
+}
+button.red:hover {
+  background-color: #c0392b;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f8f8;
+  margin: 6px 0;
+  padding: 8px;
+  border-radius: 6px;
+}
+li.done span {
+  text-decoration: line-through;
+  color: gray;
+}
+button.small {
+  width: 30px;
+  padding: 4px;
+  margin-left: 4px;
+}
+#logoutBtn {
+  margin-top: 10px;
+  background-color: #555;
+}
+#logoutBtn:hover {
+  background-color: #333;
+}

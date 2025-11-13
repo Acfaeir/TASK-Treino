@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Taskify Basic</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <h2>Taskify Basic</h2>
+    <div id="auth">
+      <input id="username" placeholder="Usuário" />
+      <input id="password" type="password" placeholder="Senha" />
+      <button onclick="register()">Registrar</button>
+      <button onclick="login()">Login</button>
+    </div>
+    <div id="tasks" style="display:none;">
+      <h3>Minhas Tarefas</h3>
+      <input id="newTask" placeholder="Nova tarefa..." />
+      <button onclick="addTask()">Adicionar</button>
+      <ul id="taskList"></ul>
+      <button id="logoutBtn" onclick="logout()">Sair</button>
+    </div>
+  </div>
+
+  <script>
+    let token = null;
+
+    function register() {
+      fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: username.value, password: password.value })
+      }).then(r => r.json()).then(alerta);
+    }
+
+    function login() {
+      fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: username.value, password: password.value })
+      })
+      .then(r => r.json())
+      .then(d => {
+        if (d.token) {
+          token = d.token;
+          auth.style.display = "none";
+          tasks.style.display = "block";
+          loadTasks();
+        } else alerta(d);
+      });
+    }
+
+    function loadTasks() {
+      fetch("/tasks", { headers: { "Authorization": token } })
+      .then(r => r.json())
+      .then(ts => {
+        taskList.innerHTML = "";
+        ts.forEach(t => {
+          const li = document.createElement("li");
+          li.className = t.done ? "done" : "";
+          li.innerHTML = `
+            <span>${t.title}</span>
+            <div>
+              <button class="small" onclick="toggle(${t.id}, ${t.done})">✔</button>
+              <button class="small red" onclick="remove(${t.id})">✖</button>
+            </div>`;
+          taskList.appendChild(li);
+        });
+      });
+    }
+
+    function addTask() {
+      fetch("/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": token },
+        body: JSON.stringify({ title: newTask.value })
+      }).then(() => { newTask.value = ""; loadTasks(); });
+    }
+
+    function toggle(id, done) {
+      fetch("/tasks/" + id, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "Authorization": token },
+        body: JSON.stringify({ done: done ? 0 : 1 })
+      }).then(loadTasks);
+    }
+
+    function remove(id) {
+      fetch("/tasks/" + id, {
+        method: "DELETE",
+        headers: { "Authorization": token }
+      }).then(loadTasks);
+    }
+
+    function logout() {
+      token = null;
+      auth.style.display = "block";
+      tasks.style.display = "none";
+    }
+
+    function alerta(d) {
+      alert(d.error || "Sucesso!");
+    }
+  </script>
+</body>
+</html>
